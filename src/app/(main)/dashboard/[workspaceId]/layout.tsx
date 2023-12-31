@@ -15,11 +15,10 @@ const Layout: React.FC<LayoutPropos> = ({ children, params }) => {
     >
       <Sidebar params={params} />
       <div
-        className="dark:border-neutral-12/70
+        className="dark:border-neutrals-8/70
         border-l-[1px]
         w-full
         relative
-        overflow-scroll
         "
       >
         {children}

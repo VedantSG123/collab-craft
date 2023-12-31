@@ -12,6 +12,8 @@ import { redirect } from "next/navigation"
 import { twMerge } from "tailwind-merge"
 
 import WorkspaceDropdown from "./workspace-dropdown"
+import NativeNavigation from "./native-navigation"
+import FolderDropDownList from "./folder-dropdown-list"
 
 type SidebarPropos = {
   params: { workspaceId: string }
@@ -49,7 +51,7 @@ const Sidebar: React.FC<SidebarPropos> = async ({ params, className }) => {
   return (
     <aside
       className={twMerge(
-        "hidden sm:flex sm:flex-col w-[280px] shirnk-0 p-4 md:gap-4 !justify-between",
+        "hidden sm:flex sm:flex-col w-[280px] shirnk-0 p-4 md:gap-4 !justify-betweem",
         className
       )}
     >
@@ -64,7 +66,27 @@ const Sidebar: React.FC<SidebarPropos> = async ({ params, className }) => {
             ...sharedWorkspaces,
           ].find((workspace) => workspace.id === params.workspaceId)}
         />
+        <div className="h-[450px] w-full overflow-hidden">
+          <div className="w-full h-full overflow-y-auto relative">
+            <div
+              className="
+              w-full
+              h-20 
+              bg-gradient-to-t 
+              from-background 
+              to-transparent 
+              z-40
+              "
+            >
+              <FolderDropDownList
+                workspaceFolders={workspaceFolderData || []}
+                workspaceId={params.workspaceId}
+              />
+            </div>
+          </div>
+        </div>
       </div>
+      <NativeNavigation myWorkspace={params.workspaceId} />
     </aside>
   )
 }

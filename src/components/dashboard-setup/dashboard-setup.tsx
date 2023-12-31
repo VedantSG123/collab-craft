@@ -169,9 +169,7 @@ const DashBoardSetup = ({ user, subscription }: DashBoardSetupProps) => {
                   accept="image/*"
                   placeholder="Workspace Logo"
                   disabled={isLoading}
-                  {...register("logo", {
-                    required: "A workspace logo",
-                  })}
+                  {...register("logo")}
                 />
                 <small className="text-red-600">
                   {errors?.logo?.message?.toString()}
