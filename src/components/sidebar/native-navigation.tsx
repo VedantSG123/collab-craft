@@ -1,7 +1,8 @@
 import Link from "next/link"
 import React from "react"
 import { twMerge } from "tailwind-merge"
-import { Box, Settings, Trash } from "lucide-react"
+import { Box, Settings as SettingsIcon, Trash } from "lucide-react"
+import Settings from "../settings/settings"
 
 type NativeNavigationProps = {
   myWorkspace: string
@@ -32,8 +33,8 @@ const NativeNavigation: React.FC<NativeNavigationProps> = ({
             <span className="ml-2">My Workspace</span>
           </Link>
         </li>
-        <li>
-          <Link
+        <Settings>
+          <li
             className="
             group/native
             flex
@@ -43,12 +44,11 @@ const NativeNavigation: React.FC<NativeNavigationProps> = ({
             p-2
             rounded-md
             "
-            href={`dashboard/${myWorkspace}`}
           >
-            <Settings className="text-primary" />
+            <SettingsIcon className="text-primary" />
             <span className="ml-2">Settings</span>
-          </Link>
-        </li>
+          </li>
+        </Settings>
         <li>
           <Link
             className="

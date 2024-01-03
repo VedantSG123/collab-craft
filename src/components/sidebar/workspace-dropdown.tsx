@@ -5,6 +5,7 @@ import { useAppState } from "@/lib/providers/state-provider"
 import SelectedWorkspace from "./selected-workspace"
 import CustomDialogTrigger from "../global/custom-dialog"
 import WorkspaceCreator from "../global/workspace-creator"
+import { ScrollArea } from "../ui/scroll-area"
 
 type WorkspaceDropdownProps = {
   privateWorkspaces: workspace[] | []
@@ -42,6 +43,14 @@ const WorkspaceDropdown: React.FC<WorkspaceDropdownProps> = ({
     setIsOpen(false)
   }
 
+  useEffect(() => {
+    if (!defaultValue) return
+    const findSelectedWorkspace = state.workspaces.find(
+      (workspace) => workspace.id === defaultValue.id
+    )
+    if (findSelectedWorkspace) setSelectedOption(findSelectedWorkspace)
+  }, [state, defaultValue])
+
   return (
     <div
       className="
@@ -63,9 +72,9 @@ const WorkspaceDropdown: React.FC<WorkspaceDropdownProps> = ({
       </div>
 
       {isOpen && (
-        <div
-          className="
-          absolute
+        <div className="absolute top-16 w-full h-auto">
+          <ScrollArea
+            className="
           w-full
           rounded-md
           shadow-md
@@ -76,51 +85,49 @@ const WorkspaceDropdown: React.FC<WorkspaceDropdownProps> = ({
           group
           border-[1px]
           border-muted
-          overflow-hidden
+          !p-2
           "
-        >
-          <div className="rounded-md flex flex-col h-full w-full overflow-auto">
-            <div className="!p-2 box-border">
-              {!!privateWorkspaces.length && (
-                <>
-                  <p className="text-muted-foreground">Private</p>
-                  <hr></hr>
-                  {privateWorkspaces.map((option) => (
-                    <SelectedWorkspace
-                      key={option.id}
-                      workspace={option}
-                      onClick={handleSelect}
-                    />
-                  ))}
-                </>
-              )}
-              {!!sharedWorkspaces.length && (
-                <>
-                  <p className="text-muted-foreground">Shared</p>
-                  <hr></hr>
-                  {sharedWorkspaces.map((option, index) => (
-                    <SelectedWorkspace
-                      key={index}
-                      workspace={option}
-                      onClick={handleSelect}
-                    />
-                  ))}
-                </>
-              )}
-              {!!collaboratingWorkspaces.length && (
-                <>
-                  <p className="text-muted-foreground">Shared</p>
-                  <hr></hr>
-                  {collaboratingWorkspaces.map((option) => (
-                    <SelectedWorkspace
-                      key={option.id}
-                      workspace={option}
-                      onClick={handleSelect}
-                    />
-                  ))}
-                </>
-              )}
-            </div>
+          >
+            {!!privateWorkspaces.length && (
+              <>
+                <p className="text-muted-foreground">Private</p>
+                <hr></hr>
+                {privateWorkspaces.map((option) => (
+                  <SelectedWorkspace
+                    key={option.id}
+                    workspace={option}
+                    onClick={handleSelect}
+                  />
+                ))}
+              </>
+            )}
+            {!!sharedWorkspaces.length && (
+              <>
+                <p className="text-muted-foreground">Shared</p>
+                <hr></hr>
+                {sharedWorkspaces.map((option, index) => (
+                  <SelectedWorkspace
+                    key={index}
+                    workspace={option}
+                    onClick={handleSelect}
+                  />
+                ))}
+              </>
+            )}
+            {!!collaboratingWorkspaces.length && (
+              <>
+                <p className="text-muted-foreground">Shared</p>
+                <hr></hr>
+                {collaboratingWorkspaces.map((option) => (
+                  <SelectedWorkspace
+                    key={option.id}
+                    workspace={option}
+                    onClick={handleSelect}
+                  />
+                ))}
+              </>
+            )}
+
             <CustomDialogTrigger
               header="Create A Workspace"
               content={<WorkspaceCreator />}
@@ -155,7 +162,7 @@ const WorkspaceDropdown: React.FC<WorkspaceDropdownProps> = ({
                 Create Workspace
               </div>
             </CustomDialogTrigger>
-          </div>
+          </ScrollArea>
         </div>
       )}
     </div>

@@ -14,6 +14,7 @@ import { twMerge } from "tailwind-merge"
 import WorkspaceDropdown from "./workspace-dropdown"
 import NativeNavigation from "./native-navigation"
 import FolderDropDownList from "./folder-dropdown-list"
+import { ScrollArea } from "../ui/scroll-area"
 
 type SidebarPropos = {
   params: { workspaceId: string }
@@ -55,7 +56,7 @@ const Sidebar: React.FC<SidebarPropos> = async ({ params, className }) => {
         className
       )}
     >
-      <div>
+      <div className="relative">
         <WorkspaceDropdown
           privateWorkspaces={privateWorkspaces}
           collaboratingWorkspaces={collaboratingWorkspaces}
@@ -66,25 +67,24 @@ const Sidebar: React.FC<SidebarPropos> = async ({ params, className }) => {
             ...sharedWorkspaces,
           ].find((workspace) => workspace.id === params.workspaceId)}
         />
-        <div className="h-[450px] w-full overflow-hidden">
-          <div className="w-full h-full overflow-y-auto relative">
-            <div
-              className="
+        <ScrollArea className="h-[450px] w-full relative">
+          <div
+            className="
               w-full
-              h-20 
+              absolute
+              h-20
+              bottom-0
               bg-gradient-to-t 
               from-background 
               to-transparent 
               z-40
               "
-            >
-              <FolderDropDownList
-                workspaceFolders={workspaceFolderData || []}
-                workspaceId={params.workspaceId}
-              />
-            </div>
-          </div>
-        </div>
+          ></div>
+          <FolderDropDownList
+            workspaceFolders={workspaceFolderData || []}
+            workspaceId={params.workspaceId}
+          />
+        </ScrollArea>
       </div>
       <NativeNavigation myWorkspace={params.workspaceId} />
     </aside>
