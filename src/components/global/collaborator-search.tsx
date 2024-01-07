@@ -11,6 +11,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import Image from "next/image"
 import { Search } from "lucide-react"
 import { Input } from "../ui/input"
 import { ScrollArea } from "../ui/scroll-area"
@@ -99,16 +100,30 @@ const CollaboratorSearch: React.FC<CollaboratorSearchProps> = ({
                     key={user.id}
                     className="p-4 flex justify-between items-center bg-primary/50"
                   >
-                    <div
-                      className="text-sm 
-                    gap-2 
-                    overflow-hidden 
-                    overflow-ellipsis 
-                    w-[180px] 
-                    "
-                    >
-                      {user.email}
+                    <div className="flex items-center">
+                      <Image
+                        src={
+                          user.avatarUrl
+                            ? user.avatarUrl
+                            : "/Images/default_avatar.webp"
+                        }
+                        alt={"User Profile Image"}
+                        width={32}
+                        height={32}
+                        className="rounded-full mr-2"
+                      />
+                      <div
+                        className="text-sm 
+                      gap-2 
+                      overflow-hidden 
+                      overflow-ellipsis 
+                      w-[180px] 
+                      "
+                      >
+                        {user.email}
+                      </div>
                     </div>
+
                     <Button
                       variant="secondary"
                       onClick={() => addCollaborator(user)}

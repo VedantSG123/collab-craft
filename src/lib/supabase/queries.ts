@@ -39,6 +39,22 @@ export const deleteWorkspace = async (workspaceId: string) => {
   }
 }
 
+export const getWorkspaceDetails = async (workspaceId: string) => {
+  const isVaild = validate(workspaceId)
+  if (!isVaild) return { data: [], error: "Error" }
+  try {
+    const wp = (await db
+      .select()
+      .from(workspaces)
+      .where(eq(workspaces.id, workspaceId))
+      .limit(1)) as workspace[]
+    return { data: wp, error: null }
+  } catch (err) {
+    console.log(err)
+    return { data: [], error: "Error" }
+  }
+}
+
 //Not shared workspaces
 export const getPrivateWorkspace = async (userId: string) => {
   if (!userId) return []
@@ -51,6 +67,7 @@ export const getPrivateWorkspace = async (userId: string) => {
       iconId: workspaces.iconId,
       inTrash: workspaces.inTrash,
       logo: workspaces.logo,
+      bannerUrl: workspaces.bannerUrl,
     })
     .from(workspaces)
     .where(
@@ -80,6 +97,7 @@ export const getCollaboratingWorkspaces = async (userId: string) => {
       iconId: workspaces.iconId,
       inTrash: workspaces.inTrash,
       logo: workspaces.logo,
+      bannerUrl: workspaces.bannerUrl,
     })
     .from(users)
     .innerJoin(collaborators, eq(users.id, collaborators.userId))
@@ -102,6 +120,7 @@ export const getSharedWorkspaces = async (userId: string) => {
       iconId: workspaces.iconId,
       inTrash: workspaces.inTrash,
       logo: workspaces.logo,
+      bannerUrl: workspaces.bannerUrl,
     })
     .from(workspaces)
     .orderBy(workspaces.createdAt)
@@ -172,6 +191,33 @@ export const updateFolder = async (
     console.log(err)
     return { data: null, error: "Error" }
   }
+}
+
+export const deleteFolder = async (folderId: string) => {
+  await db.delete(folders).where(eq(folders.id, folderId))
+}
+
+export const getFoldereDetails = async (folderId: string) => {
+  const isVaild = validate(folderId)
+  if (!isVaild) return { data: [], error: "Error" }
+  try {
+    const wp = (await db
+      .select()
+      .from(folders)
+      .where(eq(folders.id, folderId))
+      .limit(1)) as Folder[]
+    return { data: wp, error: null }
+  } catch (err) {
+    console.log(err)
+    return { data: [], error: "Error" }
+  }
+}
+
+export const findUser = async (userId: string) => {
+  const response = await db.query.users.findFirst({
+    where: (u, { eq }) => eq(u.id, userId),
+  })
+  return response
 }
 
 //Collaborators-------------------------------------------------------------
@@ -272,5 +318,25 @@ export const updateFile = async (fileData: Partial<File>, fid: string) => {
   } catch (err) {
     console.log(err)
     return { data: null, error: "Error" }
+  }
+}
+
+export const deleteFile = async (fileId: string) => {
+  await db.delete(files).where(eq(files.id, fileId))
+}
+
+export const getFileDetails = async (fileId: string) => {
+  const isVaild = validate(fileId)
+  if (!isVaild) return { data: [], error: "Error" }
+  try {
+    const wp = (await db
+      .select()
+      .from(files)
+      .where(eq(files.id, fileId))
+      .limit(1)) as File[]
+    return { data: wp, error: null }
+  } catch (err) {
+    console.log(err)
+    return { data: [], error: "Error" }
   }
 }

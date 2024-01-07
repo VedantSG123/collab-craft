@@ -47,15 +47,12 @@ const SupabaseUserProvider: React.FC<SupabaseUserProviderProps> = ({
           setSubscription(data)
         }
         if (error) {
-          toast({
-            title: "Unexpected Error",
-            description: "Try again later",
-          })
+          console.log("❌ User not found", error)
         }
       }
     }
     getUser()
-  }, [supabase, toast])
+  }, [supabase, subscription])
   return (
     <SupabaseUserContext.Provider value={{ user, subscription }}>
       {children}

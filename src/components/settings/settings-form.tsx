@@ -26,7 +26,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
 import { Lock, Share, Plus } from "lucide-react"
+import Image from "next/image"
 import CollaboratorSearch from "../global/collaborator-search"
 import { Button } from "../ui/button"
 import { Alert, AlertDescription } from "../ui/alert"
@@ -156,6 +169,22 @@ const SettingsForm = () => {
     fetchCollaborators()
   }, [])
 
+  const onClickAlertConfirm = async () => {
+    if (!workspaceId) return
+    if (collaborators.length > 0) {
+      await removeCollaborators(collaborators, workspaceId)
+    }
+
+    setPermissions("private")
+    setOpenAlertMessage(false)
+  }
+
+  const onPermissionsChange = (val: string) => {
+    if (val === "private") {
+      setOpenAlertMessage(true)
+    } else setPermissions(val)
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <p className="flex items-center gap-2 mt-5">
@@ -198,13 +227,7 @@ const SettingsForm = () => {
         >
           Permission
         </Label>
-        <Select
-          onValueChange={(val) => {
-            console.log("changed")
-            setPermissions(val)
-          }}
-          defaultValue={permissions}
-        >
+        <Select onValueChange={onPermissionsChange} value={permissions}>
           <SelectTrigger
             className="
             w-full
@@ -296,8 +319,21 @@ const SettingsForm = () => {
                       key={c.id}
                       className="p-4 flex justify-between items-center"
                     >
-                      <div className="text-sm gap-2 overflow-ellipsis sm:w-[300px] w-[140px]">
-                        {c.email}
+                      <div className="flex items-center">
+                        <Image
+                          src={
+                            c.avatarUrl
+                              ? c.avatarUrl
+                              : "/Images/default_avatar.webp"
+                          }
+                          alt={"User Profile Image"}
+                          width={32}
+                          height={32}
+                          className="rounded-full mr-2"
+                        />
+                        <div className="text-sm gap-2 overflow-ellipsis sm:w-[300px] w-[140px]">
+                          {c.email}
+                        </div>
                       </div>
                       <Button
                         variant={"secondary"}
@@ -358,6 +394,25 @@ const SettingsForm = () => {
           Delete Workspace
         </Button>
       </Alert>
+      <AlertDialog open={openAlertMessage}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDescription>
+              Changing a shared workspace to a private workspace will remove all
+              the collaborators permanently.
+            </AlertDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setOpenAlertMessage(false)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={onClickAlertConfirm}>
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

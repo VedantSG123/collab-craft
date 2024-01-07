@@ -52,24 +52,25 @@ const Sidebar: React.FC<SidebarPropos> = async ({ params, className }) => {
   return (
     <aside
       className={twMerge(
-        "hidden sm:flex sm:flex-col w-[280px] shirnk-0 p-4 md:gap-4 !justify-betweem",
+        "hidden sm:flex sm:flex-col w-[300px] shirnk-0 p-4 md:gap-4 !justify-betweem",
         className
       )}
     >
-      <div className="relative">
-        <WorkspaceDropdown
-          privateWorkspaces={privateWorkspaces}
-          collaboratingWorkspaces={collaboratingWorkspaces}
-          sharedWorkspaces={sharedWorkspaces}
-          defaultValue={[
-            ...privateWorkspaces,
-            ...collaboratingWorkspaces,
-            ...sharedWorkspaces,
-          ].find((workspace) => workspace.id === params.workspaceId)}
-        />
-        <ScrollArea className="h-[450px] w-full relative">
-          <div
-            className="
+      <ScrollArea className="mr-[-18px] pr-[20px]">
+        <div className="relative">
+          <WorkspaceDropdown
+            privateWorkspaces={privateWorkspaces}
+            collaboratingWorkspaces={collaboratingWorkspaces}
+            sharedWorkspaces={sharedWorkspaces}
+            defaultValue={[
+              ...privateWorkspaces,
+              ...collaboratingWorkspaces,
+              ...sharedWorkspaces,
+            ].find((workspace) => workspace.id === params.workspaceId)}
+          />
+          <ScrollArea className="h-[450px] w-full relative">
+            <div
+              className="
               w-full
               absolute
               h-20
@@ -79,14 +80,15 @@ const Sidebar: React.FC<SidebarPropos> = async ({ params, className }) => {
               to-transparent 
               z-40
               "
-          ></div>
-          <FolderDropDownList
-            workspaceFolders={workspaceFolderData || []}
-            workspaceId={params.workspaceId}
-          />
-        </ScrollArea>
-      </div>
-      <NativeNavigation myWorkspace={params.workspaceId} />
+            ></div>
+            <FolderDropDownList
+              workspaceFolders={workspaceFolderData || []}
+              workspaceId={params.workspaceId}
+            />
+          </ScrollArea>
+        </div>
+        <NativeNavigation myWorkspace={params.workspaceId} />
+      </ScrollArea>
     </aside>
   )
 }

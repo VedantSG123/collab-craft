@@ -39,8 +39,7 @@ const SignUpFormSchema = z
     path: ["confirmPassword"],
   })
 
-const page = () => {
-  const router = useRouter()
+const SignupPage = () => {
   const searchParams = useSearchParams()
   const [submitError, setSubmitError] = useState("")
   const [confirmation, setConfirmation] = useState(false)
@@ -170,4 +169,4 @@ const page = () => {
   )
 }
 
-export default page
+export default SignupPage

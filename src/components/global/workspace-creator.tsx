@@ -19,6 +19,7 @@ import { v4 } from "uuid"
 import { addCollaborators, createWorkspace } from "@/lib/supabase/queries"
 import CollaboratorSearch from "./collaborator-search"
 import Loader from "./Loader"
+import Image from "next/image"
 import { useToast } from "../ui/use-toast"
 
 const WorkspaceCreator = () => {
@@ -191,11 +192,28 @@ const WorkspaceCreator = () => {
             <div className="h-[120px] w-full rounded-md mt-2 border border-muted-foreground/20 overflow-hidden">
               <div className="h-full w-full overflow-y-auto">
                 {collaborators.length ? (
-                  collaborators.map((c) => (
-                    <div className="p-4 flex justify-between items-center">
-                      <div className="text-sm gap-2 overflow-ellipsis sm:w-[300px] w-[140px]">
-                        {c.email}
+                  collaborators.map((c, index) => (
+                    <div
+                      key={index}
+                      className="p-4 flex justify-between items-center"
+                    >
+                      <div className="flex items-center">
+                        <Image
+                          src={
+                            c.avatarUrl
+                              ? c.avatarUrl
+                              : "/Images/default_avatar.webp"
+                          }
+                          alt={"User Profile Image"}
+                          width={32}
+                          height={32}
+                          className="rounded-full mr-2"
+                        />
+                        <div className="text-sm gap-2 overflow-ellipsis sm:w-[300px] w-[140px]">
+                          {c.email}
+                        </div>
                       </div>
+
                       <Button
                         variant={"secondary"}
                         onClick={() => removeCollaborator(c)}
