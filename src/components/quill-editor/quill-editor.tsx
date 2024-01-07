@@ -584,11 +584,6 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
 
   return (
     <div>
-      {/* {isConnected ? (
-        <div className="h-[4px] w-[4px] bg-green-600 rounded-full top-2 left-2 sticky z-[41]"></div>
-      ) : (
-        <div className="h-[4px] w-[4px] bg-red-600 rounded-full top-2 left-2 sticky z-[41]"></div>
-      )} */}
       <div
         className={clsx(
           "h-[4px] w-[4px] rounded-full top-2 left-2 sticky z-[41]",
@@ -783,7 +778,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
           className="max-w-[800px] "
           ref={wrapperRef}
         ></div>
-        <div className="w-full h-[47px] border-t border-gray-500/50 sm:h-0"></div>
+        <div className="w-full h-[47px] border-t border-gray-500/50 sm:hidden"></div>
       </div>
     </div>
   )

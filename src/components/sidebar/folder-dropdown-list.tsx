@@ -9,6 +9,7 @@ import { createFolder } from "@/lib/supabase/queries"
 import { useToast } from "../ui/use-toast"
 import { Accordion } from "../ui/accordion"
 import Dropdown from "./dropdown"
+import useSupabaseRealtime from "@/lib/hooks/use-supabase-realtime"
 
 type FolderDropDownListProps = {
   workspaceFolders: Folder[]
@@ -20,12 +21,13 @@ const FolderDropDownList: React.FC<FolderDropDownListProps> = ({
   workspaceId,
 }) => {
   //local state folders
+  useSupabaseRealtime()
   const { state, dispatch, folderId } = useAppState()
   const [folders, setFolders] = useState(workspaceFolders)
   const { toast } = useToast()
 
   useEffect(() => {
-    if (workspaceFolders.length > 0) {
+    if (workspaceFolders.length >= 0) {
       dispatch({
         type: "SET_FOLDERS",
         payload: {
@@ -47,7 +49,7 @@ const FolderDropDownList: React.FC<FolderDropDownListProps> = ({
       state.workspaces.find((workspace) => workspace.id === workspaceId)
         ?.folders || []
     )
-  }, [state])
+  }, [state, workspaceId])
 
   const addFolderHandler = async () => {
     const newFolder: Folder = {

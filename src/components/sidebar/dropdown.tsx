@@ -1,7 +1,6 @@
 import { useAppState } from "@/lib/providers/state-provider"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
-import { useRouter } from "next/navigation"
-import React, { useMemo, useState } from "react"
+import { usePathname, useRouter } from "next/navigation"
+import React, { useEffect, useMemo, useState } from "react"
 import {
   AccordionContent,
   AccordionItem,
@@ -36,12 +35,13 @@ const Dropdown: React.FC<DropdownProps> = ({
   disabled,
   ...props
 }) => {
-  const supabase = createClientComponentClient()
   const { state, dispatch, workspaceId, folderId } = useAppState()
   const { user } = useSupabaseUser()
   const [isEditing, setIsEditing] = useState(false)
   const router = useRouter()
+  const path = usePathname()
   const { toast } = useToast()
+  const [active, setActive] = useState("")
 
   //folder title
   const folderTitle: string | undefined = useMemo(() => {
@@ -216,7 +216,8 @@ const Dropdown: React.FC<DropdownProps> = ({
     }
   }
 
-  const moveToTrash = async () => {
+  const moveToTrash = async (e: any) => {
+    e.stopPropagation()
     if (!workspaceId || !user?.email) return
     const pathId = id.split("folder")
     if (listType === "folder") {
@@ -291,12 +292,32 @@ const Dropdown: React.FC<DropdownProps> = ({
     }
   }
 
-  const groupIdentifies = clsx(
-    "dark:text-white whitespace-nowrap flex justify-between items-center w-full relative",
-    {
-      "group/folder": isFolder,
-      "group/file": !isFolder,
+  useEffect(() => {
+    if (!path || !state.workspaces || !workspaceId || !folderId) return
+    const segments = path
+      .split("/")
+      .filter((value) => value !== "dashboard" && value)
+
+    if (segments.length === 2) {
+      setActive(segments[1])
     }
+
+    if (segments.length === 3) {
+      setActive(`${segments[1]}folder${segments[2]}`)
+    }
+  }, [path])
+
+  const groupIdentifies = useMemo(
+    () =>
+      clsx(
+        "dark:text-white whitespace-nowrap flex justify-between items-center w-full relative py-1",
+        {
+          "group/folder rounded-l-sm": isFolder,
+          "group/file rounded-sm": !isFolder,
+          "bg-primary/30 dark:bg-primary-foreground/50": active === id,
+        }
+      ),
+    [isFolder, active]
   )
 
   const listStyles = useMemo(
@@ -311,7 +332,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   const hoverStyles = useMemo(
     () =>
       clsx(
-        "h-full hidden rounded-sm absolute right-0 items-center justify-center",
+        "h-full hidden rounded-sm absolute right-0 items-center justify-center py-1 pr-1",
         {
           "group-hover/file:block": listType === "file",
           "group-hover/folder:block": listType === "folder",
@@ -331,12 +352,13 @@ const Dropdown: React.FC<DropdownProps> = ({
     >
       <AccordionTrigger
         id={listType}
-        className="
-        hover:no-underline
-        p-2
-        dark:text-muted-foreground
-        text-sm
-        "
+        className={clsx(
+          "hover:no-underline p-2 dark:text-muted-foreground text-sm relative",
+          {
+            "bg-primary/30 dark:bg-primary-foreground/50 rounded-r-sm":
+              active === id && listType === "folder",
+          }
+        )}
         disabled={listType === "file"}
       >
         <div className={groupIdentifies}>
@@ -371,11 +393,11 @@ const Dropdown: React.FC<DropdownProps> = ({
             />
           </div>
           <div className={hoverStyles}>
-            <ToolTipComponent message="Move to trash">
+            <ToolTipComponent message="Move to trash relative">
               <Trash
                 size={15}
                 onClick={moveToTrash}
-                className="hover:dark:text-white dark:text-neutral-600 transition-colors"
+                className="hover:dark:text-white dark:text-neutral-600 transition-colors relative z-40"
               />
             </ToolTipComponent>
             {listType === "folder" && !isEditing && (
@@ -383,7 +405,7 @@ const Dropdown: React.FC<DropdownProps> = ({
                 <Plus
                   size={15}
                   onClick={createNewFile}
-                  className="hover:dark:text-white dark:text-neutral-600 transition-colors"
+                  className="hover:dark:text-white dark:text-neutral-600 transition-colors relative z-40"
                 />
               </ToolTipComponent>
             )}

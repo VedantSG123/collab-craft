@@ -15,6 +15,7 @@ import WorkspaceDropdown from "./workspace-dropdown"
 import NativeNavigation from "./native-navigation"
 import FolderDropDownList from "./folder-dropdown-list"
 import { ScrollArea } from "../ui/scroll-area"
+import AppUser from "./app-user"
 
 type SidebarPropos = {
   params: { workspaceId: string }
@@ -52,25 +53,26 @@ const Sidebar: React.FC<SidebarPropos> = async ({ params, className }) => {
   return (
     <aside
       className={twMerge(
-        "hidden sm:flex sm:flex-col w-[300px] shirnk-0 p-4 md:gap-4 !justify-betweem",
+        "hidden w-[300px] shirnk-0 p-4 md:gap-4 sm:flex sm:flex-col",
         className
       )}
     >
       <ScrollArea className="mr-[-18px] pr-[20px]">
-        <div className="relative">
-          <WorkspaceDropdown
-            privateWorkspaces={privateWorkspaces}
-            collaboratingWorkspaces={collaboratingWorkspaces}
-            sharedWorkspaces={sharedWorkspaces}
-            defaultValue={[
-              ...privateWorkspaces,
-              ...collaboratingWorkspaces,
-              ...sharedWorkspaces,
-            ].find((workspace) => workspace.id === params.workspaceId)}
-          />
-          <ScrollArea className="h-[450px] w-full relative">
-            <div
-              className="
+        <div className="flex flex-col justify-between min-h-[calc(100vh-32px)]">
+          <div className="relative">
+            <WorkspaceDropdown
+              privateWorkspaces={privateWorkspaces}
+              collaboratingWorkspaces={collaboratingWorkspaces}
+              sharedWorkspaces={sharedWorkspaces}
+              defaultValue={[
+                ...privateWorkspaces,
+                ...collaboratingWorkspaces,
+                ...sharedWorkspaces,
+              ].find((workspace) => workspace.id === params.workspaceId)}
+            />
+            <ScrollArea className="h-[450px] w-full relative">
+              <div
+                className="
               w-full
               absolute
               h-20
@@ -80,14 +82,19 @@ const Sidebar: React.FC<SidebarPropos> = async ({ params, className }) => {
               to-transparent 
               z-40
               "
-            ></div>
-            <FolderDropDownList
-              workspaceFolders={workspaceFolderData || []}
-              workspaceId={params.workspaceId}
-            />
-          </ScrollArea>
+              ></div>
+              <FolderDropDownList
+                workspaceFolders={workspaceFolderData || []}
+                workspaceId={params.workspaceId}
+              />
+            </ScrollArea>
+          </div>
+          <div>
+            <NativeNavigation myWorkspace={params.workspaceId} />
+            <AppUser />
+            <div className="w-full h-[50px] sm:h-0"></div>
+          </div>
         </div>
-        <NativeNavigation myWorkspace={params.workspaceId} />
       </ScrollArea>
     </aside>
   )

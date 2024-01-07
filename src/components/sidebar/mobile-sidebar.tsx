@@ -22,16 +22,16 @@ export const NativeNavigation = [
 
 const MobileSidebar: React.FC<MobileSidebarProps> = ({ children }) => {
   const [selectedNav, setSelectedNav] = useState("")
-  const { workspaceId, folderId } = useAppState()
+  const { workspaceId } = useAppState()
 
   useEffect(() => {
     setSelectedNav("pages")
-  }, [workspaceId, folderId])
+  }, [workspaceId])
 
   return (
     <>
       {selectedNav === "sidebar" && <>{children}</>}
-      <nav className="bg-black/50 backdrop-blur-sm sm:hidden fixed z-50 bottom-0 right-0 left-0">
+      <nav className="dark:bg-background/70 bg-white/40 backdrop-blur-md sm:hidden fixed z-50 bottom-0 right-0 left-0">
         <ul className="flex justify-around items-center p-2">
           {NativeNavigation.map((item) => {
             return (

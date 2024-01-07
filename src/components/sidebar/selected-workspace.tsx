@@ -16,7 +16,7 @@ const SelectedWorkspace: React.FC<SelectedWorkspaceProps> = ({
   onClick,
 }) => {
   const supabase = createClientComponentClient()
-  const [workspaceLogo, setWorkspaceLogo] = useState("/Images/squads.png")
+  const [workspaceLogo, setWorkspaceLogo] = useState("/Images/collab_craft.png")
 
   useEffect(() => {
     if (workspace.logo) {
