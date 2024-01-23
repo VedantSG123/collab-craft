@@ -421,7 +421,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
   //rooms
   useEffect(() => {
     if (socket === null || quill === null || !fileId) return
-    socket.emit("create-room", fileId)
+    socket.emit("create-room", fileId, dirType, user?.id)
   }, [socket, quill, fileId])
 
   //send changes
@@ -503,7 +503,6 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
     if (quill === null || socket === null) return
     const socketHandler = (deltas: any, id: string) => {
       if (id === fileId) {
-        console.log("received")
         quill.updateContents(deltas, "api")
       }
     }
@@ -514,6 +513,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
     }
   }, [quill, socket, fileId])
 
+  //receive cursor moves
   useEffect(() => {
     if (quill === null || socket === null || !fileId || !localCursors.length)
       return
@@ -533,6 +533,24 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
       socket.off("receive-cursor-move", socketHandler)
     }
   }, [quill, socket, fileId, localCursors])
+
+  //receive errors
+  useEffect(() => {
+    if (quill === null || socket === null || !fileId) return
+    const errorHandler = (err: any) => {
+      console.log(err)
+      toast({
+        title: "Error",
+        description: "Cannot connect to live updates service",
+        variant: "destructive",
+      })
+    }
+    socket.on("error", errorHandler)
+
+    return () => {
+      socket.off("error", errorHandler)
+    }
+  }, [quill, socket, fileId])
 
   //set active users
   useEffect(() => {
@@ -624,12 +642,11 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
             <div className="flex items-center justify-center h-10">
               {collaborators.map((c, index) => {
                 return (
-                  <>
-                    <TooltipProvider key={index}>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Avatar
-                            className="
+                  <TooltipProvider key={index}>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Avatar
+                          className="
                             -ml-3
                             bg-background
                             border-2
@@ -641,20 +658,19 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
                             w-8
                             rounded-full
                             "
-                          >
-                            <AvatarImage
-                              className="rounded-full"
-                              src={c.avatarUrl}
-                            />
-                            <AvatarFallback>
-                              {c.email.substring(0, 2).toUpperCase()}
-                            </AvatarFallback>
-                          </Avatar>
-                        </TooltipTrigger>
-                        <TooltipContent>{c.email}</TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </>
+                        >
+                          <AvatarImage
+                            className="rounded-full"
+                            src={c.avatarUrl}
+                          />
+                          <AvatarFallback>
+                            {c.email.substring(0, 2).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                      </TooltipTrigger>
+                      <TooltipContent>{c.email}</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 )
               })}
             </div>

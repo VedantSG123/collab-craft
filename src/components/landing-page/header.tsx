@@ -10,7 +10,7 @@ const Header = () => {
   return (
     <header className="p-4 flex justify-between items-center">
       <Link href={"/"} className="flex gap-2 justify-start items-center">
-        <span className="font-semibold text-2xl md:text-4xl">squads</span>
+        <span className="font-semibold text-2xl md:text-4xl">Collab Craft</span>
       </Link>
       <NavigationMenu>
         <NavigationMenuList className="flex items-center">

@@ -1,6 +1,9 @@
 "use client"
-import { io as ClientIO } from "socket.io-client"
+import { io as ClientIO, SocketOptions } from "socket.io-client"
 import { createContext, useContext, useEffect, useState } from "react"
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
+import * as dotenv from "dotenv"
+dotenv.config({ path: ".env" })
 
 type SocketContextType = {
   socket: any | null
@@ -18,30 +21,41 @@ export const useSocket = () => {
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const [socket, setSocket] = useState<any | null>(null)
+  const [token, setToken] = useState<string | null>(null)
   const [isConnected, setIsConnected] = useState(false)
+  const supabase = createClientComponentClient()
 
   useEffect(() => {
-    const socketInstance = new (ClientIO as any)(
-      process.env.NEXT_PUBLIC_SITE_URL!,
-      {
-        path: "/api/socket/io",
-        addTrailingSlash: false,
+    const getToken = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+      if (session) {
+        setToken(session.access_token)
       }
-    )
-    socketInstance.on("connect", () => {
-      setIsConnected(true)
-    })
-
-    socketInstance.on("disconnect", () => {
-      setIsConnected(false)
-    })
-
-    setSocket(socketInstance)
-
-    return () => {
-      socketInstance.disconnect()
     }
+    getToken()
   }, [])
+
+  useEffect(() => {
+    if (!process.env.NEXT_PUBLIC_BACKEND_URL) {
+      console.log("❌ No Backend url found")
+      return
+    }
+
+    const socketInstance = ClientIO(process.env.NEXT_PUBLIC_BACKEND_URL, {
+      auth: {
+        token: token,
+      },
+    })
+
+    socketInstance.on("connect", () => setIsConnected(true))
+    socketInstance.on("connect_error", (err) => {
+      console.log(err.message)
+    })
+    socketInstance.on("disconnect", () => setIsConnected(false))
+    setSocket(socketInstance)
+  }, [token])
 
   return (
     <SocketContext.Provider value={{ socket, isConnected }}>
