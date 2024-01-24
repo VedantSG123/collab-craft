@@ -284,11 +284,8 @@ const Dropdown: React.FC<DropdownProps> = ({
     }
 
     if (type === "file") {
-      router.push(
-        `/dashboard/${workspaceId}/${folderId}/${
-          accordianId.split("folder")[1]
-        }`
-      )
+      const splitIds = accordianId.split("folder")
+      router.push(`/dashboard/${workspaceId}/${splitIds[0]}/${splitIds[1]}`)
     }
   }
 
@@ -314,7 +311,8 @@ const Dropdown: React.FC<DropdownProps> = ({
         {
           "group/folder rounded-l-sm": isFolder,
           "group/file rounded-sm": !isFolder,
-          "bg-primary/30 dark:bg-primary-foreground/50": active === id,
+          "bg-primary/30 dark:bg-primary-foreground/70 dark:text-white":
+            active === id,
         }
       ),
     [isFolder, active]

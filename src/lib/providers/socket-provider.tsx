@@ -1,5 +1,5 @@
 "use client"
-import { io as ClientIO, SocketOptions } from "socket.io-client"
+import { io as ClientIO } from "socket.io-client"
 import { createContext, useContext, useEffect, useState } from "react"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import * as dotenv from "dotenv"
